@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>WebHoc</title>
+		<link rel="stylesheet" href="style.css">
+		<style>
+			canvas {
+			  border: 1px solid #ddd;
+			}
+			#gameContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+canvas {
+  border: 5px solid #333;
+}
+
+		  </style>
+	</head>
+
+	<body>
+
+		<header>
+			<nav>
+				<div class="navigation">
+					<ul class="main-menu">
+						<li><a href="index.html">Trang chủ</a></li>
+
+						<li><a href="giaovien.html">Giáo viên</a>
+							<ul class="sub-menu">
+								<li><a href="co.html">Cô My</a></li>
+							</ul>
+						</li>
+						<li><a href="dndk.html">Đăng nhập-Đăng kí</a></li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+
+		<div id="gameContainer">
+			<canvas id="gameCanvas" width="400" height="400"></canvas>
+		</div>
+
+		<canvas id="gameCanvas" width="400" height="400"></canvas>
+		<script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const gridSize = 20;
+    let snake = [{ x: 10, y: 10 }];
+    let food = { x: 15, y: 15 };
+    let direction = "right";
+
+    function drawSnake() {
+      ctx.fillStyle = "#00F";
+      snake.forEach(segment => {
+        ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+      });
+    }
+
+    function drawFood() {
+      ctx.fillStyle = "#F00";
+      ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+    }
+
+    function moveSnake() {
+      const head = Object.assign({}, snake[0]); // Copy head position
+      switch (direction) {
+        case "up":
+          head.y--;
+          break;
+        case "down":
+          head.y++;
+          break;
+        case "left":
+          head.x--;
+          break;
+        case "right":
+          head.x++;
+          break;
+      }
+      snake.unshift(head); // Add new head to the front of the snake
+      if (head.x === food.x && head.y === food.y) {
+        // Snake ate the food
+        generateFood();
+      } else {
+        snake.pop(); // Remove the tail segment
+      }
+    }
+
+    function generateFood() {
+      food = {
+        x: Math.floor(Math.random() * (canvas.width / gridSize)),
+        y: Math.floor(Math.random() * (canvas.height / gridSize)),
+      };
+    }
+
+    function checkCollision() {
+  const head = snake[0];
+  return (
+    head.x < 0 ||
+    head.x >= canvas.width / gridSize ||
+    head.y < 0 ||
+    head.y >= canvas.height / gridSize
+  );
+}
+
+
+    function updateGame() {
+      if (checkCollision()) {
+        alert("Game Over!");
+        resetGame();
+        return;
+      }
+
+      moveSnake();
+      clearCanvas();
+      drawSnake();
+      drawFood();
+      setTimeout(updateGame, 100); // Update every 100 milliseconds
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function resetGame() {
+      snake = [{ x: 10, y: 10 }];
+      generateFood();
+      direction = "right";
+      updateGame();
+    }
+
+    document.addEventListener("keydown", e => {
+      switch (e.key) {
+        case "ArrowUp":
+          if (direction !== "down") direction = "up";
+          break;
+        case "ArrowDown":
+          if (direction !== "up") direction = "down";
+          break;
+        case "ArrowLeft":
+          if (direction !== "right") direction = "left";
+          break;
+        case "ArrowRight":
+          if (direction !== "left") direction = "right";
+          break;
+      }
+    });
+
+    resetGame(); // Start the game
+  </script>
+
+		<footer>
+			<p>Bản quyền &copy; 2023</p>
+			<p>Địa chỉ: 132 Tôn Đức Thắng - Hòa Khánh Bắc - Liên Chiểu - Đà Nẵng</p>
+			<p>Số điện thoại: 0987456123</p>
+			<p>Email : baitap@gmail.com</p>
+			<li><a href="luat.html">Quy định web</a></li>
+		</footer>
+	</body>
+	<script src="script.js"></script>
+
+</html>
